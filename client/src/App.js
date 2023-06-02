@@ -1,15 +1,21 @@
 import './App.css';
 import { useState, useEffect } from "react"
+import { useParams } from 'react-router-dom';
+import Card from './components/Card';
+import Pagination from './components/Pagination';
 
+const App = () => {
 
-const App = ({match}) => {
-
-  console.log(match.params.pageNumber);
+  let { pageNumber } = useParams();
+  
+  if (pageNumber === undefined) {
+    pageNumber = 1;
+  }
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(pageNumber);
   const [pages, setPages] = useState(1);
 
   useEffect(() => {
@@ -35,12 +41,19 @@ const App = ({match}) => {
   }, [page])
 
   return (
-    <div className="App">
+    <div className="app">
       {/* Pagination Components */}
-
+      <Pagination page={page} pages={pages} changePage={setPage} />
       {/* Posts listing */}
-
+      <div className='app__posts'>
+        {
+          posts.map((post) => {
+            return <Card key={post._id} post={post}/>
+          })
+        }
+      </div>
       {/* Pagination Components */}
+      <Pagination page={page} pages={pages} changePage={setPage} />
     </div>
   );
 }
